@@ -41,7 +41,7 @@ function getRecords() {
         TableName: TABLE_NAME,
     }
 
-    return docClient.query(params)
+    return docClient.scan(params)
 }
 
 // Lambda Handler
