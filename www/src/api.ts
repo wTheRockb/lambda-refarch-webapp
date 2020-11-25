@@ -31,7 +31,7 @@ const getAllConstituents = async (): Promise<Constituent[]> => {
 };
 
 const searchConstituents = async (emailQuery: string): Promise<Constituent[]> => {
-  const url = `${ROOT_BACKEND_API_PATH}/${PATHS.GET_CONSTITUENTS}/${emailQuery}`;
+  const url = `${ROOT_BACKEND_API_PATH}/${emailQuery}`;
 
   if (true) {
     const response = await axios.get(url, DEFAULT_AXIOS_CONFIG);
