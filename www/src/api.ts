@@ -12,7 +12,7 @@ const DEFAULT_AXIOS_CONFIG = Object.freeze({
 });
 
 // TODO
-const ROOT_BACKEND_API_PATH = `${config.api_base_url}/item/`;
+const ROOT_BACKEND_API_PATH = `${config.api_base_url}/item`;
 const USE_BACKEND_API = process.env.REACT_APP_USE_BACKEND_API;
 
 export const PATHS = Object.freeze({
