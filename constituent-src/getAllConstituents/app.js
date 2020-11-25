@@ -45,7 +45,7 @@ function getRecords() {
 }
 
 // Lambda Handler
-exports.getAllToDoItem =
+exports.getAllConstituents =
     metricScope(metrics =>
         async (event, context, callback) => {
             metrics.setNamespace('Constituents')
