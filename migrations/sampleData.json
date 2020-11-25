@@ -1,0 +1,26 @@
+[
+  {
+    "email": "goku@foo.com",
+    "firstName": "Goku",
+    "lastName": "Saiyan",
+    "zipCode": "92660"
+  },
+  {
+    "email": "frieza@foo.com",
+    "firstName": "Frieza",
+    "lastName": "フリーザ",
+    "zipCode": "namek-2242"
+  },
+  {
+    "email": "spartan117@unsc.gov",
+    "firstName": "John",
+    "lastName": "Spartan",
+    "zipCode": "92660"
+  },
+  {
+    "email": "wTheRockb@gmail.com",
+    "firstName": "Woody",
+    "lastName": "\"The Rock\" Butler",
+    "zipCode": "92660-0155"
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "name": "create-constituents-table",
+  "version": "1.0.0",
+  "description": "Builds constituent DynamoDB table",
+  "main": "src/createConstituentsTable.js",
+  "author": "SAM CLI",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.709.0"
+  }
+}

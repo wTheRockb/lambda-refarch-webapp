@@ -126,6 +126,25 @@ Resources:
         WriteCapacityUnits: 5
       SSESpecification:
         SSEEnabled: true
+  ConstituentsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName:
+        Fn::Join:
+        - '-'
+        - - constituents-table
+          - Ref: AWS::StackName
+      KeySchema:
+      - AttributeName: email
+        KeyType: HASH
+      AttributeDefinitions:
+      - AttributeName: email
+        AttributeType: S
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      SSESpecification:
+        SSEEnabled: true
   TodoApi:
     Type: AWS::Serverless::Api
     MethodSettings:
@@ -151,56 +170,21 @@ Resources:
         AllowOrigin: '''*'''
         AllowMethods: '''OPTIONS,HEAD,GET,PUT,POST,DELETE'''
         AllowHeaders: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'''
-      Auth:
-        Authorizers:
-          CognitoAuthorizer:
-            UserPoolArn:
-              Fn::GetAtt:
-              - TodoUserPool
-              - Arn
-  GetTodoFunction:
+  GetAllConstituentsFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://woody-lambda-refarch-west-2/b427b0c2b7f8d75c49cbb5a067dc01fa
-      Handler: app.getToDoItem
+      CodeUri: s3://woody-lambda-refarch-west-2/0c09d56006281745136589921316321b
+      Handler: app.getAllConstituentsItem
       Tracing: Active
       Policies:
       - DynamoDBReadPolicy:
           TableName:
-            Ref: TodoTable
+            Ref: ConstituentsTable
       - CloudWatchPutMetricPolicy: {}
       Environment:
         Variables:
           TABLE_NAME:
-            Ref: TodoTable
-          AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
-          USE_DYNAMODB_LOCAL: '0'
-          DYNAMODB_LOCAL_URI: ''
-      Events:
-        GetItem:
-          Type: Api
-          Properties:
-            Path: /item/{id}
-            Method: get
-            RestApiId:
-              Ref: TodoApi
-            Auth:
-              Authorizer: CognitoAuthorizer
-  GetAllTodoFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: s3://woody-lambda-refarch-west-2/a976718d933bff4d44c2820a3186bd3c
-      Handler: app.getAllToDoItem
-      Tracing: Active
-      Policies:
-      - DynamoDBReadPolicy:
-          TableName:
-            Ref: TodoTable
-      - CloudWatchPutMetricPolicy: {}
-      Environment:
-        Variables:
-          TABLE_NAME:
-            Ref: TodoTable
+            Ref: ConstituentsTable
           AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
           ENDPOINT_OVERRIDE: ''
       Events:
@@ -211,115 +195,6 @@ Resources:
             Method: get
             RestApiId:
               Ref: TodoApi
-            Auth:
-              Authorizer: CognitoAuthorizer
-  CompleteTodoFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: s3://woody-lambda-refarch-west-2/6ea87bc0f1896caac16fd88b2da969b6
-      Handler: app.completeToDoItem
-      Tracing: Active
-      Policies:
-      - DynamoDBCrudPolicy:
-          TableName:
-            Ref: TodoTable
-      - CloudWatchPutMetricPolicy: {}
-      Environment:
-        Variables:
-          TABLE_NAME:
-            Ref: TodoTable
-          AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
-          ENDPOINT_OVERRIDE: ''
-      Events:
-        CompleteItem:
-          Type: Api
-          Properties:
-            Path: /item/{id}/done
-            Method: post
-            RestApiId:
-              Ref: TodoApi
-            Auth:
-              Authorizer: CognitoAuthorizer
-  AddTodoFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: s3://woody-lambda-refarch-west-2/2f98ce921a244458bde333b2520262bd
-      Handler: app.addToDoItem
-      Tracing: Active
-      Policies:
-      - DynamoDBCrudPolicy:
-          TableName:
-            Ref: TodoTable
-      - CloudWatchPutMetricPolicy: {}
-      Environment:
-        Variables:
-          TABLE_NAME:
-            Ref: TodoTable
-          AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
-          ENDPOINT_OVERRIDE: ''
-      Events:
-        PutItem:
-          Type: Api
-          Properties:
-            Path: /item
-            Method: POST
-            RestApiId:
-              Ref: TodoApi
-            Auth:
-              Authorizer: CognitoAuthorizer
-  UpdateTodoFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: s3://woody-lambda-refarch-west-2/40809e342eaa1a269eeadf6d16ba6aab
-      Handler: app.updateToDoItem
-      Tracing: Active
-      Policies:
-      - DynamoDBCrudPolicy:
-          TableName:
-            Ref: TodoTable
-      - CloudWatchPutMetricPolicy: {}
-      Environment:
-        Variables:
-          TABLE_NAME:
-            Ref: TodoTable
-          AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
-      Events:
-        UpdateItem:
-          Type: Api
-          Properties:
-            Path: /item/{id}
-            Method: PUT
-            RestApiId:
-              Ref: TodoApi
-            Auth:
-              Authorizer: CognitoAuthorizer
-  DeleteTodoFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: s3://woody-lambda-refarch-west-2/272e146cede03bafb9b79c297804f86a
-      Handler: app.deleteToDoItem
-      Tracing: Active
-      Policies:
-      - DynamoDBCrudPolicy:
-          TableName:
-            Ref: TodoTable
-      - CloudWatchPutMetricPolicy: {}
-      Environment:
-        Variables:
-          TABLE_NAME:
-            Ref: TodoTable
-          AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
-          ENDPOINT_OVERRIDE: ''
-      Events:
-        DeleteItem:
-          Type: Api
-          Properties:
-            Path: /item/{id}
-            Method: DELETE
-            RestApiId:
-              Ref: TodoApi
-            Auth:
-              Authorizer: CognitoAuthorizer
   ApiGatewayPushToCloudWatchRole:
     Type: AWS::IAM::Role
     Properties:

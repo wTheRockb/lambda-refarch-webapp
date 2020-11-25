@@ -108,6 +108,22 @@ Resources:
       SSESpecification:
         SSEEnabled: true
 
+  ConstituentsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Join ['-', [constituents-table, !Ref AWS::StackName]]
+      KeySchema:
+          - AttributeName: email
+            KeyType: HASH
+      AttributeDefinitions:
+          - AttributeName: email
+            AttributeType: S
+      ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5                  
+      SSESpecification:
+        SSEEnabled: true
+
   # API declaration
   TodoApi:
     Type: AWS::Serverless::Api
@@ -128,52 +144,21 @@ Resources:
         AllowOrigin: "'*'"
         AllowMethods: "'OPTIONS,HEAD,GET,PUT,POST,DELETE'"
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-      Auth:
-        Authorizers:
-          CognitoAuthorizer:
-            UserPoolArn: !GetAtt "TodoUserPool.Arn"
 
   # API Functions
-  GetTodoFunction:
+  GetAllConstituentsFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      CodeUri: todo-src/getTodo
-      Handler: app.getToDoItem
+      CodeUri: constituent-src/getAllConstituents
+      Handler: app.getAllConstituentsItem
       Tracing: Active
       Policies:
         - DynamoDBReadPolicy:
-            TableName: !Ref TodoTable
+            TableName: !Ref ConstituentsTable
         - CloudWatchPutMetricPolicy: {}
       Environment:
         Variables:
-          TABLE_NAME: !Ref TodoTable
-          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
-          USE_DYNAMODB_LOCAL: "0"
-          DYNAMODB_LOCAL_URI: ""
-
-      Events:
-        GetItem:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-          Properties:
-            Path: /item/{id}
-            Method: get
-            RestApiId: !Ref TodoApi
-            Auth:
-              Authorizer: CognitoAuthorizer
-
-  GetAllTodoFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-    Properties:
-      CodeUri: todo-src/getAllTodo
-      Handler: app.getAllToDoItem
-      Tracing: Active
-      Policies:
-        - DynamoDBReadPolicy:
-            TableName: !Ref TodoTable
-        - CloudWatchPutMetricPolicy: {}
-      Environment:
-        Variables:
-          TABLE_NAME: !Ref TodoTable
+          TABLE_NAME: !Ref ConstituentsTable
           AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
           ENDPOINT_OVERRIDE: ""
 
@@ -184,110 +169,7 @@ Resources:
             Path: /item
             Method: get
             RestApiId: !Ref TodoApi
-            Auth:
-              Authorizer: CognitoAuthorizer
 
-  CompleteTodoFunction:
-      Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-      Properties:
-        CodeUri: todo-src/completeToDo/
-        Handler: app.completeToDoItem
-        Tracing: Active
-        Policies:
-          - DynamoDBCrudPolicy:
-              TableName: !Ref TodoTable
-          - CloudWatchPutMetricPolicy: {}
-        Environment:
-          Variables:
-            TABLE_NAME: !Ref TodoTable
-            AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
-            ENDPOINT_OVERRIDE: ""
-
-        Events:
-          CompleteItem:
-            Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-            Properties:
-              Path: /item/{id}/done
-              Method: post
-              RestApiId: !Ref TodoApi
-              Auth:
-                Authorizer: CognitoAuthorizer
-
-  AddTodoFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-    Properties:
-      CodeUri: todo-src/addTodo/
-      Handler: app.addToDoItem
-      Tracing: Active
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TodoTable
-        - CloudWatchPutMetricPolicy: {}
-      Environment:
-        Variables:
-          TABLE_NAME: !Ref TodoTable
-          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
-          ENDPOINT_OVERRIDE: ""
-
-      Events:
-        PutItem:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-          Properties:
-            Path: /item
-            Method: POST
-            RestApiId: !Ref TodoApi
-            Auth:
-              Authorizer: CognitoAuthorizer
-
-  UpdateTodoFunction:
-      Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-      Properties:
-        CodeUri: todo-src/updateTodo/
-        Handler: app.updateToDoItem
-        Tracing: Active
-        Policies:
-          - DynamoDBCrudPolicy:
-              TableName: !Ref TodoTable
-          - CloudWatchPutMetricPolicy: {}
-        Environment:
-          Variables:
-            TABLE_NAME: !Ref TodoTable
-            AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
-        Events:
-          UpdateItem:
-            Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-            Properties:
-              Path: /item/{id}
-              Method: PUT
-              RestApiId: !Ref TodoApi
-              Auth:
-                Authorizer: CognitoAuthorizer
-
-  DeleteTodoFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-    Properties:
-      CodeUri: todo-src/deleteTodo
-      Handler: app.deleteToDoItem
-      Tracing: Active
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TodoTable
-        - CloudWatchPutMetricPolicy: {}
-      Environment:
-        Variables:
-          TABLE_NAME: !Ref TodoTable
-          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
-          ENDPOINT_OVERRIDE: ""
-
-      Events:
-        DeleteItem:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-          Properties:
-            Path: /item/{id}
-            Method: DELETE
-            RestApiId: !Ref TodoApi
-            Auth:
-              Authorizer: CognitoAuthorizer
 
   # This role allows API Gateway to push execution and access logs to CloudWatch logs
   ApiGatewayPushToCloudWatchRole:

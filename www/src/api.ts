@@ -1,6 +1,8 @@
 import axios from "axios";
 import { Constituent } from "./types";
 
+import config from './config';
+
 const DEFAULT_HEADERS = Object.freeze({
   Accept: "application/json",
 });
@@ -10,8 +12,7 @@ const DEFAULT_AXIOS_CONFIG = Object.freeze({
 });
 
 // TODO
-const ROOT_BACKEND_API_PATH =
-  process.env.REACT_APP_CONSTITUENT_API_URL + "/api";
+const ROOT_BACKEND_API_PATH = `${config.api_base_url}/item/`;
 const USE_BACKEND_API = process.env.REACT_APP_USE_BACKEND_API;
 
 export const PATHS = Object.freeze({

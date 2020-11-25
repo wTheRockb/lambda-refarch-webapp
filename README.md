@@ -1,3 +1,10 @@
+Woodys notes:
+
+`export DEPLOYMENT_BUCKET=woody-lambda-refarch-west-2`
+
+
+
+
 # Serverless Reference Architecture: Web Application
 
 README Languages: 
