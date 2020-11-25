@@ -173,7 +173,7 @@ Resources:
   GetAllConstituentsFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://woody-lambda-refarch-west-2/19e5805f63648212d863a260d1ac8f7f
+      CodeUri: s3://woody-lambda-refarch-west-2/d69736dd779c9ff79c67d2d1ba794ea0
       Handler: app.getAllConstituents
       Tracing: Active
       Policies:

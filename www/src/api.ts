@@ -24,7 +24,7 @@ const getAllConstituents = async (): Promise<Constituent[]> => {
 
   if (true) {
     const response = await axios.get(url, DEFAULT_AXIOS_CONFIG);
-    return response.data as Constituent[];
+    return response.data.items as Constituent[];
   } else {
     return Promise.resolve(fakeData);
   }
@@ -35,7 +35,7 @@ const searchConstituents = async (emailQuery: string): Promise<Constituent[]> =>
 
   if (true) {
     const response = await axios.get(url, DEFAULT_AXIOS_CONFIG);
-    return response.data as Constituent[];
+    return response.data.items as Constituent[];
   } else {
     const filteredConstituents = fakeData.filter(
       (constituent) => constituent.email.includes(emailQuery)
