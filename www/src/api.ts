@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Constituent } from "./types";
 
-import config from './config';
+import config from "./config";
 
 const DEFAULT_HEADERS = Object.freeze({
   Accept: "application/json",
@@ -22,26 +22,17 @@ export const PATHS = Object.freeze({
 const getAllConstituents = async (): Promise<Constituent[]> => {
   const url = `${ROOT_BACKEND_API_PATH}`;
 
-  if (true) {
-    const response = await axios.get(url, DEFAULT_AXIOS_CONFIG);
-    return response.data.Items as Constituent[];
-  } else {
-    return Promise.resolve(fakeData);
-  }
+  const response = await axios.get(url, DEFAULT_AXIOS_CONFIG);
+  return response.data.Items as Constituent[];
 };
 
-const searchConstituents = async (emailQuery: string): Promise<Constituent[]> => {
+const searchConstituents = async (
+  emailQuery: string
+): Promise<Constituent[]> => {
   const url = `${ROOT_BACKEND_API_PATH}/${emailQuery}`;
 
-  if (true) {
-    const response = await axios.get(url, DEFAULT_AXIOS_CONFIG);
-    return response.data.Items as Constituent[];
-  } else {
-    const filteredConstituents = fakeData.filter(
-      (constituent) => constituent.email.includes(emailQuery)
-    );
-    return Promise.resolve(filteredConstituents);
-  }
+  const response = await axios.get(url, DEFAULT_AXIOS_CONFIG);
+  return response.data.Items as Constituent[];
 };
 
 const ConstituentApiClient = Object.freeze({
