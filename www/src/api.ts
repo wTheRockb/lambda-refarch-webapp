@@ -20,7 +20,7 @@ export const PATHS = Object.freeze({
 });
 
 const getAllConstituents = async (): Promise<Constituent[]> => {
-  const url = `${ROOT_BACKEND_API_PATH}/${PATHS.GET_CONSTITUENTS}`;
+  const url = `${ROOT_BACKEND_API_PATH}`;
 
   if (true) {
     const response = await axios.get(url, DEFAULT_AXIOS_CONFIG);
