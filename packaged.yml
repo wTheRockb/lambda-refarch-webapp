@@ -195,6 +195,31 @@ Resources:
             Method: get
             RestApiId:
               Ref: TodoApi
+  SearchConstituentsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://woody-lambda-refarch-west-2/00eba7292bd7038eb1adc8f55281f8e7
+      Handler: app.searchConstituents
+      Tracing: Active
+      Policies:
+      - DynamoDBReadPolicy:
+          TableName:
+            Ref: ConstituentsTable
+      - CloudWatchPutMetricPolicy: {}
+      Environment:
+        Variables:
+          TABLE_NAME:
+            Ref: ConstituentsTable
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
+          ENDPOINT_OVERRIDE: ''
+      Events:
+        GetItem:
+          Type: Api
+          Properties:
+            Path: /item/{email_query}
+            Method: get
+            RestApiId:
+              Ref: TodoApi
   ApiGatewayPushToCloudWatchRole:
     Type: AWS::IAM::Role
     Properties:
